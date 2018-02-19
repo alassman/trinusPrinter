@@ -46,21 +46,40 @@ fileConversionDone = False
 tempHumidityFile = open('Temperature Humidity Data.txt','w')
 tempHumidityFile.write("Time	Humidity	Temperature\n")
 
+# TODO:
+# Measure ratio between steps and millimeters on printer
+# attempt to receive feedback from arduino - so that we know when it completes a jog command
+
 #Sending the desired jog distance to the Arduino. Have to write in how to convert from distance to # of steps
 def get_xjogentry(event = None):
-	print(xjogentry.get())
-	ser.write('x' + xjogentry.get())
+	print("XJOG DISTANCE: " + xjogentry.get())
+	# ser.write('x' + xjogentry.get())
 	set_xcoor()
 
 def get_yjogentry(event=None):
 	print(yjogentry.get())
-	ser.write('y' + yjogentry.get())
+	# ser.write('y' + yjogentry.get())
 	set_ycoor()
 
 def get_zjogentry(event=None):
 	print(zjogentry.get())
-	ser.write('z' + zjogentry.get())
+	# ser.write('z' + zjogentry.get())
 	set_zcoor()
+
+def reset_origin(event=None):
+	global xcoor
+	global ycoor
+	global zcoor
+	print("RESET ORIGIN")
+	xcoor = 0
+	xcoorEntry.delete(0,END)
+	xcoorEntry.insert(10, '{:+.3f}'.format(xcoor))
+	ycoor = 0
+	ycoorEntry.delete(0,END)
+	ycoorEntry.insert(10, '{:+.3f}'.format(ycoor))
+	zcoor = 0
+	zcoorEntry.delete(0,END)
+	zcoorEntry.insert(10, '{:+.3f}'.format(zcoor))
 
 #Removed this section for printer D
 # def get_ujogentry(event=None):
@@ -75,6 +94,7 @@ def light_switch(event = None):
 #Outputting the current coordinate system
 def set_xcoor(event=None):
 	global xcoor
+	print(xcoor)
 	xcoor = xcoor + float(xjogentry.get())
 	xcoorEntry.delete(0,END)
 	xcoorEntry.insert(10, '{:+.3f}'.format(xcoor))
@@ -567,14 +587,15 @@ Label(window, text = "# of Dots:").grid(row=7, column = 4)
 Label(window, text = "# of Rasters:").grid(row=8, column = 4)
 Label(window, text = "	").grid(row = 0, column = 7)
 Label(window, text = "	").grid(row = 0, column = 8)
-Label(window, text = "X Location:").grid(row = 0, column = 9)
-Label(window, text = "Y Location:").grid(row = 1, column = 9)
-Label(window, text = "Z Location:").grid(row = 2, column = 9)
+Label(window, text = "Set X Location:").grid(row = 11)
+Label(window, text = "Set Y Location:").grid(row = 12)
+Label(window, text = "Set Z Location:").grid(row = 13)
 #Label(window, text = "U Location:").grid(row = 3, column = 9) #Removed this line for printer D
 #Label(window,text = "Vertical Location (Z+U):").grid(row=4,column=9) #Removed this line for printer D
-Label(window, text = "	").grid(row = 0, column = 11)
-Label(window, text = "	").grid(row = 0, column =11)
-Label(window, text = "	").grid(row = 0, column =11)
+Label(window, text = "X Position").grid(row = 0, column = 9)
+Label(window, text = "Y Position").grid(row = 1, column =9)
+Label(window, text = "Z Position").grid(row = 2, column =9)
+
 Label(window, text = "	").grid(row = 0, column = 11)
 Label(window, text = "Executable File:").grid(row=7, column = 9)
 
@@ -627,14 +648,15 @@ xPitchEntry.grid(row=7,column=1)
 yPitchEntry.grid(row=8,column=1)
 dotsEntry.grid(row=7,column=5)
 rastersEntry.grid(row=8,column=5)
-xcoorEntry.grid(row=0,column=10)
-ycoorEntry.grid(row=1,column=10)
-zcoorEntry.grid(row=2,column=10)
+xcoorEntry.grid(row=0,column=8)
+ycoorEntry.grid(row=1,column=8)
+zcoorEntry.grid(row=2,column=8)
 #ucoorEntry.grid(row=3,column=10) #Removed this line for printer D
 #ztotcoorEntry.grid(row=4,column=10) #Removed this line for printer D
-newxcoorEntry.grid(row=0,column=12)
-newycoorEntry.grid(row=1,column=12)
-newzcoorEntry.grid(row=2,column=12)
+newxcoorEntry.grid(row=11,column=1)
+newycoorEntry.grid(row=12,column=1)
+newzcoorEntry.grid(row=13,column=1)
+
 #newucoorEntry.grid(row=3,column=12) #
 fileNameEntry.grid(row = 7, column = 10)
 dcRasterLengthEntry.grid(row = 9, column = 1)
@@ -666,6 +688,7 @@ dcRasterPitchEntry.bind('<Return>',get_dcRasterPitchEntry)
 Button(window, text='Enter X Jog', command =lambda: get_xjogentry()).grid(row=0,column=2,sticky = W, pady=4)
 Button(window, text='Enter Y Jog', command =lambda: get_yjogentry()).grid(row=1,column=2,sticky = W, pady=4)
 Button(window, text='Enter Z Jog', command =lambda: get_zjogentry()).grid(row=2,column=2,sticky = W, pady=4)
+Button(window, text='Reset Origin', command =lambda: reset_origin()).grid(row=14,sticky = W, pady=4)
 #Button(window, text='Enter U Jog', command =lambda: get_ujogentry()).grid(row=3,column=2,sticky = W, pady=4) #Removed this line for printer D
 Button(window, text='Enter High Voltage', command =get_highVoltageEntry).grid(row=0,column=6,sticky = W, pady=4)
 Button(window, text='Enter Low Voltage', command =get_lowVoltageEntry).grid(row=1,column=6,sticky = W, pady=4)
