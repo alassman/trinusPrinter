@@ -41,6 +41,8 @@ functionRunning = False
 fileInProcess = False
 functionRunningRead = ""
 fileConversionDone = False
+mmToJogDist = 118.75
+JogDistTomm = 0.00842105263157895
 
 #Creating file for recording temperature and humidity
 tempHumidityFile = open('Temperature Humidity Data.txt','w')
@@ -49,21 +51,28 @@ tempHumidityFile.write("Time	Humidity	Temperature\n")
 # TODO:
 # Measure ratio between steps and millimeters on printer
 # attempt to receive feedback from arduino - so that we know when it completes a jog command
+# Each marking is one milimeter
 
 #Sending the desired jog distance to the Arduino. Have to write in how to convert from distance to # of steps
 def get_xjogentry(event = None):
 	print("XJOG DISTANCE: " + xjogentry.get())
-	# ser.write('x' + xjogentry.get())
+	xconversion = float(xjogentry.get()) * mmToJogDist
+	# ser.write('x' + str(xconversion))
+	print('x' + xjogentry.get())
 	set_xcoor()
 
 def get_yjogentry(event=None):
 	print(yjogentry.get())
-	# ser.write('y' + yjogentry.get())
+	yconversion = float(yjogentry.get()) * mmToJogDist
+	# ser.write('y' + str(yconversion))
+	print('y' + str(yconversion))
 	set_ycoor()
 
 def get_zjogentry(event=None):
 	print(zjogentry.get())
-	# ser.write('z' + zjogentry.get())
+	zconversion = float(zjogentry.get()) * mmToJogDist
+	# ser.write('z' + str(zconversion))
+	print('z' + str(zconversion))
 	set_zcoor()
 
 def reset_origin(event=None):
@@ -225,6 +234,7 @@ def get_offTimeEntry(*event):
 def get_stepDelayEntry(*event):
 	print("Step Delay time: " + stepDelayEntry.get())
 	ser.write('s' + stepDelayEntry.get())
+	print("motor speed set")
 	
 	
 #Sending the x and y pitch between drops to the Arduino
@@ -567,9 +577,9 @@ if(UnoConnect):
 	window.after(15000,tempHumidityFileWrite)
 
 #Creating and positioning labels for the different variables
-Label(window, text ="Jog X:").grid(row=0)
-Label(window, text ="Jog Y:").grid(row=1)
-Label(window, text ="Jog Z:").grid(row=2)
+Label(window, text ="Jog X (mm):").grid(row=0)
+Label(window, text ="Jog Y (mm):").grid(row=1)
+Label(window, text ="Jog Z (mm):").grid(row=2)
 #Label(window, text ="Jog U:").grid(row=3) #Removed this line for printer D
 Label(window, text = "High Voltage:").grid(row=0, column = 4)
 Label(window, text = "Low Voltage:").grid(row=1, column = 4)
