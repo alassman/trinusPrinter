@@ -158,10 +158,10 @@ def emptyTrash(event=None):
     trash.insert(0, "Click here to use keys")
 
 # Create key press event bindings
-BACK = "u'\uf700'"
-FORWARD = "u'\uf701'"
-LEFT = "u'\uf702'"
-RIGHT = "u'\uf703'"
+BACK = "b"
+FORWARD = "f"
+LEFT = "l"
+RIGHT = "r"
 UP = "u"
 DOWN = "d"
 QUIT = "q"
@@ -169,17 +169,18 @@ RESET = "r"
 
 def key(event):
     # print (event.char)
-    if repr(event.char) == FORWARD:
-        get_xjogentry(Positive)
-    elif repr(event.char) == BACK:
-        print("BACK")
+    if event.char == FORWARD:
+        print("FORWARD")
         get_xjogentry(Negative)
-    elif repr(event.char) == LEFT:
+    elif event.char == BACK:
+        print("BACK")
+        get_xjogentry(Positive)
+    elif event.char == LEFT:
         print("LEFT")
-        get_yjogentry(Positive)
-    elif repr(event.char) == RIGHT:
-        print("RIGHT")
         get_yjogentry(Negative)
+    elif event.char == RIGHT:
+        print("RIGHT")
+        get_yjogentry(Positive)
     elif event.char == UP:
         print("UP")
         get_zjogentry(Positive)
@@ -240,11 +241,11 @@ zjogentry.bind('<Return>',get_zjogentry)
 # stepDelayEntry.bind('<Return>',get_stepDelayEntry)
 
 #Creating and positioning buttons to enter the inputted values from the entry window to the output functions
-Button(window, text='Forward', command =lambda: get_xjogentry(Positive)).grid(row=0,column=2,sticky = W, pady=4)
-Button(window, text='Backward', command =lambda: get_xjogentry(Negative)).grid(row=0,column=3,sticky = W, pady=4)
+Button(window, text='Forward', command =lambda: get_xjogentry(Negative)).grid(row=0,column=2,sticky = W, pady=4)
+Button(window, text='Backward', command =lambda: get_xjogentry(Positive)).grid(row=0,column=3,sticky = W, pady=4)
 
-Button(window, text='Left', command =lambda: get_yjogentry(Positive)).grid(row=1,column=2,sticky = W, pady=4)
-Button(window, text='Right', command =lambda: get_yjogentry(Negative)).grid(row=1,column=3,sticky = W, pady=4)
+Button(window, text='Left', command =lambda: get_yjogentry(Negative)).grid(row=1,column=2,sticky = W, pady=4)
+Button(window, text='Right', command =lambda: get_yjogentry(Positive)).grid(row=1,column=3,sticky = W, pady=4)
 
 Button(window, text='Up', command =lambda: get_zjogentry(Positive)).grid(row=2,column=2,sticky = W, pady=4)
 Button(window, text='Down', command =lambda: get_zjogentry(Negative)).grid(row=2,column=3,sticky = W, pady=4)
