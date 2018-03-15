@@ -45,8 +45,8 @@ def get_xjogentry(direction=None, event = None):
         if direction != "Enter" and direction == Negative:
             distance = distance * -1
         print (direction)
-        # ser.write('x' + str(int(distance * mmToJogDist)))
-        print('x' + str(int(distance * mmToJogDist)))
+        ser.write('x' + str(int(distance * mmToJogDist)))
+        # print('x' + str(int(distance * mmToJogDist)))
         set_xcoor(distance)
     except:
         messageWindow.delete(0, END)
@@ -57,8 +57,8 @@ def get_yjogentry(direction=None, event=None):
         distance = float(yjogentry.get()) 
         if direction != "Enter" and direction == Negative:
             distance = distance * -1
-        # ser.write('y' + str(int(yconversion)))
-        print('y' + str(int(distance * mmToJogDist)))
+        ser.write('y' + str(int(distance * mmToJogDist)))
+        # print('y' + str(int(distance * mmToJogDist)))
         set_ycoor(distance)
     except:
         messageWindow.delete(0, END)
@@ -70,8 +70,8 @@ def get_zjogentry(direction=None, event=None):
         distance = float(zjogentry.get()) 
         if direction != "Enter" and direction == Negative:
             distance = distance * -1
-        # ser.write('z' + str(int(zconversion)))
-        print('z' + str(int(distance * mmToJogDist)))
+        ser.write('z' + str(int(distance * mmToJogDist)))
+        # print('z' + str(int(distance * mmToJogDist)))
         set_zcoor(distance)
     except:
         messageWindow.delete(0, END)
