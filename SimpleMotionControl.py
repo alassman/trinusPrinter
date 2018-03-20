@@ -170,17 +170,18 @@ RESET = "o"
 
 def key(event):
     # print (event.char)
-    if repr(event.char) == FORWARD:
-        get_xjogentry(Positive)
-    elif repr(event.char) == BACK:
-        print("BACK")
+    if event.char == FORWARD:
+        print("FORWARD")
         get_xjogentry(Negative)
-    elif repr(event.char) == LEFT:
+    elif event.char == BACK:
+        print("BACK")
+        get_xjogentry(Positive)
+    elif event.char == LEFT:
         print("LEFT")
-        get_yjogentry(Positive)
-    elif repr(event.char) == RIGHT:
-        print("RIGHT")
         get_yjogentry(Negative)
+    elif event.char == RIGHT:
+        print("RIGHT")
+        get_yjogentry(Positive)
     elif event.char == UP:
         print("UP")
         get_zjogentry(Positive)
