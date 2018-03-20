@@ -113,9 +113,11 @@ def set_zcoor(distance, event=None):
     zcoorEntry.insert(10, '{:+.3f}'.format(zcoor))
 
 #Sending the delay between steps to the Arduino
+speedDict = {1:15, 2:30, 3:75, 4:55, 5:90, 6:20, 7:85, 8:35, 9:100, 10:50}
 def get_stepDelayEntry(*event):
-    print("Step Delay time: " + stepDelayEntry.get())
-    ser.write('s' + stepDelayEntry.get())
+    print("Step Delay time: " + str(motorSpeedSlider.get()))
+    # ser.write('s' + stepDelayEntry.get())
+    print("send: " + str(speedDict[motorSpeedSlider.get()]))
     print("motor speed set")
 
 #Writes temperature and humidity data from the Arduino Uno to a file every 15 seconds   
@@ -146,7 +148,6 @@ if(UnoConnect):
 Label(window, text ="Jog X (mm):").grid(row=0)
 Label(window, text ="Jog Y (mm):").grid(row=1)
 Label(window, text ="Jog Z (mm):").grid(row=2)
-# Label(window, text = "Motor Speed Delay (ms):").grid(row=5, column = 4)
 Label(window, text = "X Position").grid(row = 4)
 Label(window, text = "Y Position").grid(row = 5)
 Label(window, text = "Z Position").grid(row = 6)
@@ -158,14 +159,14 @@ def emptyTrash(event=None):
     trash.insert(0, "Click here to use keys")
 
 # Create key press event bindings
-BACK = "u'\uf700'"
-FORWARD = "u'\uf701'"
-LEFT = "u'\uf702'"
-RIGHT = "u'\uf703'"
+BACK = "b"
+FORWARD = "f"
+LEFT = "l"
+RIGHT = "r"
 UP = "u"
 DOWN = "d"
 QUIT = "q"
-RESET = "r"
+RESET = "o"
 
 def key(event):
     # print (event.char)
@@ -202,9 +203,6 @@ xjogentry = Entry(window)
 yjogentry = Entry(window)
 zjogentry = Entry(window)
 
-#ujogentry = Entry(window) #Removed this line for printer D
-# stepDelayEntry = Entry(window)
-
 #Creating an entry window for showing current coordinates
 xcoorEntry = Entry(window)
 ycoorEntry = Entry(window)
@@ -217,6 +215,10 @@ zcoorEntry = Entry(window)
 trash = Entry(window)
 trash.insert(0, "Click here to use keys")
 
+# Slider to set speed of motors
+motorSpeedSlider = Scale(window, from_=0, to=10, length=250, tickinterval=1,  orient=HORIZONTAL)
+
+# Create Message window for user
 messageWindow = Entry(window)
 messageWindow.insert(0, "Have fun printing!")
 
@@ -224,33 +226,31 @@ messageWindow.insert(0, "Have fun printing!")
 xjogentry.grid(row=0,column=1)
 yjogentry.grid(row=1,column=1)
 zjogentry.grid(row=2,column=1)
-#ujogentry.grid(row=3,column=1) #Removed this line for printer D
-# stepDelayEntry.grid(row=5,column=6)
 xcoorEntry.grid(row=4,column=1)
 ycoorEntry.grid(row=5,column=1)
 zcoorEntry.grid(row=6,column=1)
 trash.grid(row=3)
 messageWindow.grid(row=3,column=2)
+motorSpeedSlider.grid(row=4, column=4)
+
 
 #Triggers the button corresponding to the entry box that the cursor is currently in
 xjogentry.bind('<Return>',get_xjogentry)
 yjogentry.bind('<Return>',get_yjogentry)
 zjogentry.bind('<Return>',get_zjogentry)
-#ujogentry.bind('<Return>',get_ujogentry) #Removed this line for printer D
-# stepDelayEntry.bind('<Return>',get_stepDelayEntry)
 
 #Creating and positioning buttons to enter the inputted values from the entry window to the output functions
-Button(window, text='Forward', command =lambda: get_xjogentry(Positive)).grid(row=0,column=2,sticky = W, pady=4)
-Button(window, text='Backward', command =lambda: get_xjogentry(Negative)).grid(row=0,column=3,sticky = W, pady=4)
+Button(window, text='Forward (f)', command =lambda: get_xjogentry(Positive)).grid(row=0,column=2,sticky = W, pady=4)
+Button(window, text='Backward (b)', command =lambda: get_xjogentry(Negative)).grid(row=0,column=3,sticky = W, pady=4)
 
-Button(window, text='Left', command =lambda: get_yjogentry(Positive)).grid(row=1,column=2,sticky = W, pady=4)
-Button(window, text='Right', command =lambda: get_yjogentry(Negative)).grid(row=1,column=3,sticky = W, pady=4)
+Button(window, text='Left (l)', command =lambda: get_yjogentry(Positive)).grid(row=1,column=2,sticky = W, pady=4)
+Button(window, text='Right (r)', command =lambda: get_yjogentry(Negative)).grid(row=1,column=3,sticky = W, pady=4)
 
-Button(window, text='Up', command =lambda: get_zjogentry(Positive)).grid(row=2,column=2,sticky = W, pady=4)
-Button(window, text='Down', command =lambda: get_zjogentry(Negative)).grid(row=2,column=3,sticky = W, pady=4)
+Button(window, text='Up (u)', command =lambda: get_zjogentry(Positive)).grid(row=2,column=2,sticky = W, pady=4)
+Button(window, text='Down (d)', command =lambda: get_zjogentry(Negative)).grid(row=2,column=3,sticky = W, pady=4)
 
-Button(window, text='Reset Origin', command =lambda: reset_origin()).grid(row=4,column=2,sticky = W, pady=4)
-# Button(window, text='Enter Motor Speed Delay', command =get_stepDelayEntry).grid(row=5,column=7,sticky = W, pady=4)
-Button(window, text='EXIT', command =window.destroy).grid(row=6,column=4,sticky = W, pady=4)
+Button(window, text='Reset Origin (o)', command =lambda: reset_origin()).grid(row=4,column=2,sticky = W, pady=4)
+Button(window, text='EXIT (q)', command =window.destroy).grid(row=6,column=4,sticky = W, pady=4)
+Button(window, text='Set Speed', command=get_stepDelayEntry).grid(row=4, column=5)
 
 window.mainloop()
