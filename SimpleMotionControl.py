@@ -1,4 +1,4 @@
-import serial
+# import serial
 import Tkinter
 import time
 import datetime
@@ -11,6 +11,9 @@ from time import sleep
 try:
     ser = serial.Serial('COM7',115200,timeout = 2)
     print("Connection to motor/voltage Arduino Mega successful\n")
+    print("Initialize Step Delay to 25: ")
+    ser.write('s25')
+    print("motor speed set")
 except Exception as e:
     print(e)
 try:
@@ -113,11 +116,10 @@ def set_zcoor(distance, event=None):
     zcoorEntry.insert(10, '{:+.3f}'.format(zcoor))
 
 #Sending the delay between steps to the Arduino
-speedDict = {1:15, 2:30, 3:75, 4:55, 5:90, 6:20, 7:85, 8:35, 9:100, 10:50}
 def get_stepDelayEntry(*event):
     print("Step Delay time: " + str(motorSpeedSlider.get()))
-    # ser.write('s' + stepDelayEntry.get())
-    print("send: " + str(speedDict[motorSpeedSlider.get()]))
+    ser.write('s' + stepDelayEntry.get())
+    print("send: " + str(motorSpeedSlider.get()))
     print("motor speed set")
 
 #Writes temperature and humidity data from the Arduino Uno to a file every 15 seconds   
@@ -217,7 +219,8 @@ trash = Entry(window)
 trash.insert(0, "Click here to use keys")
 
 # Slider to set speed of motors
-motorSpeedSlider = Scale(window, from_=0, to=10, length=250, tickinterval=1,  orient=HORIZONTAL)
+motorSpeedSlider = Scale(window, from_=17, to=32, length=250, label="Speed Controller", orient=HORIZONTAL)
+motorSpeedSlider.set(25)
 
 # Create Message window for user
 messageWindow = Entry(window)
