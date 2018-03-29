@@ -7,14 +7,14 @@ import math
 from Tkinter import *
 from time import sleep
 
-initialPrinterStepDelay = 37
+initialStepDelay = 37
 
 #Connecting to the Arduino at a baudrate of 115200
 try:
     ser = serial.Serial('COM7',115200,timeout = 2)
     print("Connection to motor/voltage Arduino Mega successful\n")
-    print("Initialize Step Delay to " + initialPrinterStepDelay)
-    ser.write('s' + str(initialPrinterStepDelay))
+    print("Initialize Step Delay to " + initialStepDelay)
+    ser.write('s' + str(initialStepDelay))
     print("motor speed set")
 except Exception as e:
     print(e)
@@ -46,12 +46,13 @@ tempHumidityFile.write("Time    Humidity    Temperature\n")
 #Sending the desired jog distance to the Arduino. Have to write in how to convert from distance to # of steps
 def get_xjogentry(direction=None, event = None):
     try:
+        getAndSet_stepDelayEntry()
         distance = float(xjogentry.get()) 
         if direction != "Enter" and direction == Negative:
             distance = distance * -1
         print (direction)
         ser.write('x' + str(int(distance * mmToJogDist)))
-        # print('x' + str(int(distance * mmToJogDist)))
+        print('x' + str(int(distance * mmToJogDist)))
         set_xcoor(distance)
     except:
         messageWindow.delete(0, END)
@@ -59,11 +60,12 @@ def get_xjogentry(direction=None, event = None):
 
 def get_yjogentry(direction=None, event=None):
     try:
+        getAndSet_stepDelayEntry()
         distance = float(yjogentry.get()) 
         if direction != "Enter" and direction == Negative:
             distance = distance * -1
         ser.write('y' + str(int(distance * mmToJogDist)))
-        # print('y' + str(int(distance * mmToJogDist)))
+        print('y' + str(int(distance * mmToJogDist)))
         set_ycoor(distance)
     except:
         messageWindow.delete(0, END)
@@ -72,11 +74,12 @@ def get_yjogentry(direction=None, event=None):
 
 def get_zjogentry(direction=None, event=None):
     try:
+        getAndSet_stepDelayEntry()
         distance = float(zjogentry.get()) 
         if direction != "Enter" and direction == Negative:
             distance = distance * -1
         ser.write('z' + str(int(distance * mmToJogDist)))
-        # print('z' + str(int(distance * mmToJogDist)))
+        print('z' + str(int(distance * mmToJogDist)))
         set_zcoor(distance)
     except:
         messageWindow.delete(0, END)
@@ -118,7 +121,7 @@ def set_zcoor(distance, event=None):
     zcoorEntry.insert(10, '{:+.3f}'.format(zcoor))
 
 #Sending the delay between steps to the Arduino
-def get_stepDelayEntry(*event):
+def getAndSet_stepDelayEntry(*event):
     print("Step Delay time: " + str(motorSpeedSlider.get()))
     ser.write('s' + str(motorSpeedSlider.get()))
     #print("send: " + str(motorSpeedSlider.get()))
@@ -155,6 +158,8 @@ Label(window, text ="Jog Z (mm):").grid(row=2)
 Label(window, text = "X Position").grid(row = 4)
 Label(window, text = "Y Position").grid(row = 5)
 Label(window, text = "Z Position").grid(row = 6)
+Label(window, text = "Z Position").grid(row = 6)
+Label(window, text = "Fast\t\t\tSlow").grid(row = 8, column=1)
 Label(window, text = "  ").grid(row = 0, column = 11)
 
 # Function to clean "trash" entry widget
@@ -222,7 +227,7 @@ trash.insert(0, "Click here to use keys")
 
 # Slider to set speed of motors
 motorSpeedSlider = Scale(window, from_=33, to=49, length=250, label="Speed Controller", orient=HORIZONTAL)
-motorSpeedSlider.set(initialPrinterStepDelay)
+motorSpeedSlider.set(initialStepDelay)
 
 # Create Message window for user
 messageWindow = Entry(window)
@@ -237,7 +242,7 @@ ycoorEntry.grid(row=5,column=1)
 zcoorEntry.grid(row=6,column=1)
 trash.grid(row=3)
 messageWindow.grid(row=3,column=2)
-motorSpeedSlider.grid(row=4, column=4)
+motorSpeedSlider.grid(row=7,column=1)
 
 
 #Triggers the button corresponding to the entry box that the cursor is currently in
@@ -256,7 +261,6 @@ Button(window, text='Up (u)', command =lambda: get_zjogentry(Positive)).grid(row
 Button(window, text='Down (d)', command =lambda: get_zjogentry(Negative)).grid(row=2,column=3,sticky = W, pady=4)
 
 Button(window, text='Reset Origin (o)', command =lambda: reset_origin()).grid(row=4,column=2,sticky = W, pady=4)
-Button(window, text='EXIT (q)', command =window.destroy).grid(row=6,column=4,sticky = W, pady=4)
-Button(window, text='Set Speed', command=get_stepDelayEntry).grid(row=4, column=5)
+Button(window, text='EXIT (q)', command =window.destroy).grid(row=7,column=0,sticky = W, pady=4)
 
 window.mainloop()
