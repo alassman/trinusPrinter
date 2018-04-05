@@ -13,7 +13,7 @@ initialStepDelay = 37
 try:
     ser = serial.Serial('COM7',115200,timeout = 2)
     print("Connection to motor/voltage Arduino Mega successful\n")
-    print("Initialize Step Delay to " + initialStepDelay)
+    print("Initialize Step Delay to " + str(initialStepDelay))
     ser.write('s' + str(initialStepDelay))
     print("motor speed set")
 except Exception as e:
